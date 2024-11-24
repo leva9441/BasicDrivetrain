@@ -15,7 +15,7 @@ package frc.robot;
 public final class Constants {
 
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static final int driveControllerPort = 0;
   }
 
   public static class MotorConstants {
@@ -24,7 +24,11 @@ public final class Constants {
     public static final int rightFrontMotorID = 3;
     public static final int rightBackMotorID = 4;
 
+    public static final double drivetrainOutput = .25;
+    public static final int drivetrainMaxVoltage = 6;
 
+    public static final double joystickDeadband = 0.1;
+    
 
   }
 

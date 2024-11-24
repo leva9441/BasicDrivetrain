@@ -8,7 +8,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.REVLibError;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,7 +28,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
   RelativeEncoder leftRelativeEncoder = leftFrontMotor.getEncoder();
   RelativeEncoder rightRelativeEncoder = rightFrontMotor.getEncoder();
 
-  //differential drive is the class we use for all tank drive needs
+  //Differential drive is the class we use for all tank drive needs
+  //This might need MotorController parameters but for now lets see if it works with two regular motors
+  //which are being followed by two other motors.
   DifferentialDrive drivetrain = new DifferentialDrive(leftFrontMotor,rightFrontMotor);
 
   /** Creates a new ExampleSubsystem. */
@@ -43,9 +44,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
     leftRelativeEncoder.setPosition(0);
     rightRelativeEncoder.setPosition(0);
 
-    leftBackMotor.follow(leftBackMotor);
-    rightBackMotor.follow(rightBackMotor);
+    leftBackMotor.follow(leftFrontMotor);
+    rightBackMotor.follow(rightFrontMotor);
 
+    //I don't know if I have to invert the following motors as well, but I'm going to
+    // because the video inverted the entire MotorControllerGroup.
+    leftFrontMotor.setInverted(false);
+    leftBackMotor.setInverted(false);
+    rightFrontMotor.setInverted(true);
+    rightBackMotor.setInverted(true);
+  }
+
+  public void arcadeDrive(double fwd, double rot) {
+    drivetrain.arcadeDrive(fwd, rot);
+  }
+
+  public void stopMotors() {
+    leftFrontMotor.set(0);
+    rightFrontMotor.set(0);
   }
 
   @Override

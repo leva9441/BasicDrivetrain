@@ -4,38 +4,52 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+
+import java.util.function.DoubleSupplier;
 
 /** An example command that uses an example subsystem. */
 public class DrivetrainCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final DrivetrainSubsystem drivetrainSubsystem;
+  private final DoubleSupplier speedSupFB;
+  private final DoubleSupplier speedSupT;
+  private final DoubleSupplier speedOutputPercentage;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public DrivetrainCommand(DrivetrainSubsystem drivetrainSubsystem) {
+  public DrivetrainCommand(DrivetrainSubsystem drivetrainSubsystem, DoubleSupplier speedSupFB, DoubleSupplier speedSupT, DoubleSupplier speedOutputPercentage) {
     this.drivetrainSubsystem = drivetrainSubsystem;
+    this.speedSupFB = speedSupFB;
+    this.speedSupT = speedSupT;
+    this.speedOutputPercentage = speedOutputPercentage;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrainSubsystem);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    double currentSpeedFB = MathUtil.applyDeadband(speedSupFB.getAsDouble(), Constants.MotorConstants.joystickDeadband);
+    double currentSpeedT = MathUtil.applyDeadband(speedSupT.getAsDouble(), Constants.MotorConstants.joystickDeadband);
+    double currentSpeedOP = 0.5 * (MathUtil.applyDeadband(speedOutputPercentage.getAsDouble(), Constants.MotorConstants.joystickDeadband)) + 0.5;
 
-  // Called once the command ends or is interrupted.
+    drivetrainSubsystem.arcadeDrive(currentSpeedFB * currentSpeedOP, currentSpeedT * currentSpeedOP);
+  }
+
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    drivetrainSubsystem.stopMotors();
+  }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
