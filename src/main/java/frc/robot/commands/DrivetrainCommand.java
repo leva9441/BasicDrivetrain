@@ -40,9 +40,9 @@ public class DrivetrainCommand extends Command {
   public void execute() {
     double currentSpeedFB = MathUtil.applyDeadband(speedSupFB.getAsDouble(), Constants.MotorConstants.joystickDeadband);
     double currentSpeedT = MathUtil.applyDeadband(speedSupT.getAsDouble(), Constants.MotorConstants.joystickDeadband);
-    double currentSpeedOP = 0.5 * (MathUtil.applyDeadband(speedOutputPercentage.getAsDouble(), Constants.MotorConstants.joystickDeadband)) + 0.5;
+    double currentSpeedOP = -0.5 * (MathUtil.applyDeadband(speedOutputPercentage.getAsDouble(), Constants.MotorConstants.joystickDeadband)) + Constants.MotorConstants.drivetrainOutput;
 
-    drivetrainSubsystem.arcadeDrive(currentSpeedFB * currentSpeedOP, currentSpeedT * currentSpeedOP);
+    drivetrainSubsystem.arcadeDrive(currentSpeedFB * currentSpeedOP, currentSpeedT * currentSpeedOP, currentSpeedOP);
   }
 
   @Override

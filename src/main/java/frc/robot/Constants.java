@@ -19,12 +19,12 @@ public final class Constants {
   }
 
   public static class MotorConstants {
-    public static final int leftFrontMotorID = 1;
-    public static final int leftBackMotorID = 2;
-    public static final int rightFrontMotorID = 3;
-    public static final int rightBackMotorID = 4;
+    public static final int leftFrontMotorID = 16;
+    public static final int leftBackMotorID = 15;
+    public static final int rightFrontMotorID = 13;
+    public static final int rightBackMotorID = 14;
 
-    public static final double drivetrainOutput = .25;
+    public static final double drivetrainOutput = .75;
     public static final int drivetrainMaxVoltage = 6;
 
     public static final double joystickDeadband = 0.1;

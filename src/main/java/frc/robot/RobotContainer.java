@@ -21,7 +21,7 @@ public class RobotContainer {
 
   private final int axisFBDrive = XboxController.Axis.kRightY.value;
   private final int axisTDrive = XboxController.Axis.kRightX.value;
-  private final int outputPercentage = XboxController.Axis.kLeftY.value;
+  private final int outPerc = XboxController.Axis.kLeftY.value;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -29,7 +29,7 @@ public class RobotContainer {
       new DrivetrainCommand(drivetrainSubsystem, 
       () -> -weapons.getRawAxis(axisFBDrive),
       () -> -weapons.getRawAxis(axisTDrive),
-      () -> -weapons.getRawAxis(outputPercentage)
+      () -> -weapons.getRawAxis(outPerc)
       )
     );
     // Configure the trigger bindings
