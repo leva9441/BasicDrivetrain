@@ -15,7 +15,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class DrivetrainSubsystem extends SubsystemBase {
+import frc.robot.MotorControllerGroup;
+
+public class DrivetrainSubsystem extends SubsystemBase{
   
   //left motors
   CANSparkMax leftFrontMotor;
@@ -25,33 +27,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
   CANSparkMax rightFrontMotor;
   CANSparkMax rightBackMotor;
 
-  //encoders
-  RelativeEncoder leftFrontRelativeEncoder;
-  RelativeEncoder leftBackRelativeEncoder;
-  RelativeEncoder rightFrontRelativeEncoder;
-  RelativeEncoder rightBackRelativeEncoder;
-
   //Differential drive is the class we use for all tank drive needs
   //This might need MotorController parameters but for now lets see if it works with two regular motors
   //which are being followed by two other motors.
   DifferentialDrive drivetrain;
 
-  /** Creates a new ExampleSubsystem. */
+  MotorControllerGroup leftMotorControllerGroup;
+  MotorControllerGroup rightMotorControllerGroup;
+
   public DrivetrainSubsystem() {
-    drivetrain = new DifferentialDrive(leftFrontMotor,rightFrontMotor);
 
-  leftFrontMotor = new CANSparkMax(Constants.MotorConstants.leftFrontMotorID, MotorType.kBrushless);
-  leftBackMotor = new CANSparkMax(Constants.MotorConstants.leftBackMotorID, MotorType.kBrushless);
+    leftFrontMotor = new CANSparkMax(Constants.MotorConstants.leftFrontMotorID, MotorType.kBrushless);
+    leftBackMotor = new CANSparkMax(Constants.MotorConstants.leftBackMotorID, MotorType.kBrushless);
   
-  //right motors
-  rightFrontMotor = new CANSparkMax(Constants.MotorConstants.rightFrontMotorID, MotorType.kBrushless);
-  rightBackMotor = new CANSparkMax(Constants.MotorConstants.rightBackMotorID, MotorType.kBrushless);
+    //right motors
+    rightFrontMotor = new CANSparkMax(Constants.MotorConstants.rightFrontMotorID, MotorType.kBrushless);
+    rightBackMotor = new CANSparkMax(Constants.MotorConstants.rightBackMotorID, MotorType.kBrushless);
 
-  //encoders
-  leftFrontRelativeEncoder = leftFrontMotor.getEncoder();
-  leftBackRelativeEncoder = leftBackMotor.getEncoder();
-  rightFrontRelativeEncoder = rightFrontMotor.getEncoder();
-  rightBackRelativeEncoder = rightBackMotor.getEncoder();
 
 
     leftBackMotor.restoreFactoryDefaults();
@@ -59,32 +51,36 @@ public class DrivetrainSubsystem extends SubsystemBase {
     rightBackMotor.restoreFactoryDefaults();
     rightFrontMotor.restoreFactoryDefaults();
 
-    leftFrontRelativeEncoder.setPosition(0);
-    leftBackRelativeEncoder.setPosition(0);
-    rightFrontRelativeEncoder.setPosition(0);
-    rightBackRelativeEncoder.setPosition(0);
+    leftFrontMotor.getEncoder().setPosition(0);
+    leftBackMotor.getEncoder().setPosition(0);
+    rightFrontMotor.getEncoder().setPosition(0);
+    rightBackMotor.getEncoder().setPosition(0);
 
 
-    leftBackMotor.follow(leftFrontMotor);
-    rightBackMotor.follow(rightFrontMotor);
+    //leftBackMotor.follow(leftFrontMotor);
+    //rightBackMotor.follow(rightFrontMotor);
+
+    leftMotorControllerGroup = new MotorControllerGroup(leftFrontMotor, leftBackMotor);
+    rightMotorControllerGroup = new MotorControllerGroup(rightFrontMotor, rightBackMotor);
+
+    drivetrain = new DifferentialDrive(leftMotorControllerGroup,rightMotorControllerGroup); 
+    // new idea
+    //what if I follow each motor in the parameters when I use followers
+
+    //leftFrontMotor.setInverted(false);
+    //leftBackMotor.setInverted(false);
+    //rightFrontMotor.setInverted(true);
+    //rightBackMotor.setInverted(true);
 
 
-    //I don't know if I have to invert the following motors as well, but I'm going to
-    // because the video inverted the entire MotorControllerGroup.
-    leftFrontMotor.setInverted(false);
-    leftBackMotor.setInverted(true);//test to get it to go at all
-    rightFrontMotor.setInverted(true);
-    rightBackMotor.setInverted(true);
-
-
-    drivetrain.setMaxOutput(0.85);
+    drivetrain.setMaxOutput(Constants.MotorConstants.drivetrainMAXOutput);
   }
 
   public void arcadeDrive(double fwd, double rot, double op) {
-    leftBackMotor.follow(leftFrontMotor);
-    rightBackMotor.follow(rightFrontMotor);
+    //leftBackMotor.follow(leftFrontMotor);
+    //rightBackMotor.follow(rightFrontMotor);
 
-    drivetrain.arcadeDrive(fwd, rot);
+    drivetrain.arcadeDrive(fwd, rot);    //IDEA: use tank drive not arcade
 
     SmartDashboard.putNumber("Forward Input", fwd);
     SmartDashboard.putNumber("Turning Input", rot);
@@ -99,10 +95,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     //Encoders
-    SmartDashboard.putNumber("Front Left Encoder", leftFrontRelativeEncoder.getPosition());
-    SmartDashboard.putNumber("Back Left Encoder", leftBackRelativeEncoder.getPosition());
-    SmartDashboard.putNumber("Front Right Encoder", rightFrontRelativeEncoder.getPosition());
-    SmartDashboard.putNumber("Back Right Encoder", rightBackRelativeEncoder.getPosition());
+    SmartDashboard.putNumber("Front Left Encoder", leftFrontMotor.getEncoder().getPosition());
+    SmartDashboard.putNumber("Back Left Encoder", leftBackMotor.getEncoder().getPosition());
+    SmartDashboard.putNumber("Front Right Encoder", rightFrontMotor.getEncoder().getPosition());
+    SmartDashboard.putNumber("Back Right Encoder", rightBackMotor.getEncoder().getPosition());
     
     //Speed
     SmartDashboard.putNumber("Front Left Speed", leftFrontMotor.get());

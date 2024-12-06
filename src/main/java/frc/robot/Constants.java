@@ -24,8 +24,9 @@ public final class Constants {
     public static final int rightFrontMotorID = 13;
     public static final int rightBackMotorID = 14;
 
+    public static final double drivetrainMAXOutput = .85;
     public static final double drivetrainOutput = .75;
-    public static final int drivetrainMaxVoltage = 6;
+    // public static final int drivetrainMaxVoltage = 6;
 
     public static final double joystickDeadband = 0.1;
     

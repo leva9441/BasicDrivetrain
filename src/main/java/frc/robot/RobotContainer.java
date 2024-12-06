@@ -19,6 +19,7 @@ public class RobotContainer {
   
   private final Joystick weapons = new Joystick(Constants.OperatorConstants.driveControllerPort);
 
+  //NEW IDEA! make axisTDrive = kLeftY and make outPerc = left trigger axis
   private final int axisFBDrive = XboxController.Axis.kRightY.value;
   private final int axisTDrive = XboxController.Axis.kRightX.value;
   private final int outPerc = XboxController.Axis.kLeftY.value;
